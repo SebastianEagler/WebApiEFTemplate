@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.Extensions.Options;
 
 
 namespace WebApiEFTemplate.Options
@@ -16,21 +17,29 @@ namespace WebApiEFTemplate.Options
 
         public void Configure(DatabaseOptions options)
         {
+
             var databaseType = _configuration.GetValue<string>("DatabaseType") ?? DatabaseType.NpgSql;
 
-            var connectString = databaseType == DatabaseType.MsSql ?
-                _configuration.GetConnectionString(DatabaseType.MsSql) : _configuration.GetConnectionString(DatabaseType.NpgSql);
+            var connectString = (databaseType == DatabaseType.MsSql ?
+                _configuration.GetConnectionString(DatabaseType.MsSql) : _configuration.GetConnectionString(DatabaseType.NpgSql)) ?? "";
 
+            options.ConnectionString = connectString;
             options.DatabaseType = databaseType;
-            options.ConnectionString = connectString ?? "";
             _configuration.GetSection("DatabaseOptions").Bind(options);
 
 #if DEBUG
-            _logger.LogInformation("ok");
+            if (connectString.Contains("Server") && connectString.Contains("Database") && connectString.Contains("User Id") && connectString.Contains("Password"))
+            {
+                _logger.LogInformation("Connection string is ok.");
+            }
+            else if (string.IsNullOrEmpty(connectString))
+            {
+                _logger.LogWarning("Connection string is empty. Check appsettings.json");
+            }
 #endif
-
             //
-            // Można dodać inne opcje, które nie są w appsettings.json
+            // Można dodać wczytywanie innych opcji, które nie są umiesczone w appsettings.json
+            // Albo zrezygnować z appsettings.json i wczytać parametry z innego źródła.
             // 
 
         }

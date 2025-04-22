@@ -26,14 +26,13 @@ namespace WebApiEFTemplate.DatabaseSetup
                         sqlOptions.CommandTimeout(dbOptions.CommandTimeout);
                     });
                     break;
-                case DatabaseType.MsSql:
-                    throw new NotImplementedException("MsSql is not implemented yet.");
-                    //optionsBuilder.UseSqlServer(dbOptions.ConnectionString, sqlOptions =>
-                    //{
-                    //    sqlOptions.EnableRetryOnFailure(dbOptions.MaxRetryCount, TimeSpan.FromSeconds(dbOptions.MaxRetryDelay), null);
-                    //    sqlOptions.CommandTimeout(dbOptions.CommandTimeout);
-                    //});
-                    // break;
+                case DatabaseType.MsSql:                    
+                    optionsBuilder.UseSqlServer(dbOptions.ConnectionString, sqlOptions =>
+                    {
+                        sqlOptions.EnableRetryOnFailure(dbOptions.MaxRetryCount, TimeSpan.FromSeconds(dbOptions.MaxRetryDelay), null);
+                        sqlOptions.CommandTimeout(dbOptions.CommandTimeout);
+                    });
+                     break;
                 default:
                     throw new NotSupportedException($"Database type '{dbOptions.DatabaseType}' is not supported.");
             }

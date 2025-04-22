@@ -23,9 +23,9 @@ namespace WebApiEFTemplate
 
 
             builder.Services.ConfigureOptions<DatabaseOptionsSetup>();
-
             builder.Services.AddSingleton<DatabaseContextOptionsBuilder>();
             builder.Services.AddSingleton<IConfigureOptions<DbContextOptionsBuilder>, DatabaseContextOptionsBuilder>();
+            // lub builder.Services.ConfigureOptions<DatabaseContextOptionsBuilder>();
 
             builder.Services.AddDbContext<DatabaseContext>((serviceProvider, dbContextOptions) =>
             {
